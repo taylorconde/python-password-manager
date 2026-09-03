@@ -1,0 +1,15 @@
+# Ambiente virtual e caches locais
+.venv/
+__pycache__/
+*.py[cod]
+
+# Configurações da IDE e ferramentas locais
+.idea/
+.claude/
+
+# Dados e segredos locais do gerenciador de senhas
+.salt
+data.csv
+.env
+.env.*
+!.env.example
