@@ -22,7 +22,6 @@ Fluxo atual da aplicação:
 - `Tkinter`
 - `cryptography`
 - `pyperclip`
-- `six`
 
 ## Funcionalidades
 
@@ -54,7 +53,7 @@ day_29/
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install cryptography pyperclip six
+pip install cryptography pyperclip
 python main.py
 ```
 
