@@ -1,9 +1,11 @@
 import tkinter as tk
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox
 
 from password import strong_password
 from service_interface import UserInterface, LoginInterface
+
 from encryption_service import EncryptionService
+from cryptography.fernet import InvalidToken
 import pyperclip
 import re
 
@@ -19,7 +21,7 @@ def handle_login(password):
     for widget in root.winfo_children():
         widget.destroy() # Remove todos os widgets da tela de login
 
-    interface = UserInterface(root, password_generator, save_data)
+    interface = UserInterface(root, password_generator, save_data,search_data)
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
@@ -67,6 +69,40 @@ def save_data():
             with open("data.csv", "a") as data:
                 data.writelines(f"{website_data} | {email_username_data} | {encrypted_pass}\n")
             clear_entry()
+
+
+def search_data():
+    target_website = interface.website_entry.get()
+
+    if not target_website:
+        messagebox.showerror("Error", "Please enter a website name to search.")
+        return
+
+    try:
+        with open("data.csv", "r") as data:
+            for line in data:
+                parts = line.strip().split(" | ")
+                if len(parts) == 3:
+                    site, email, encrypted_pass = parts
+
+                    if target_website == site:
+                        try:
+                            decrypted_pass = encryption_service.decrypt(encrypted_pass)
+                            messagebox.showinfo("Password Found",
+                                                f"Website: {site}\nEmail: {email}\nPassword: {decrypted_pass}")
+                            return
+                        except InvalidToken:
+                            messagebox.showerror("Error",
+                                                 "Could not decrypt this password. Check your master passkey.")
+                            return
+            messagebox.showinfo("Not Found", "No entry found for this website.")
+    except FileNotFoundError:
+        messagebox.showerror("Error", "No data file found, Add a password first!")
+
+
+
+
+
 
 login_ui = LoginInterface(root, handle_login)
 

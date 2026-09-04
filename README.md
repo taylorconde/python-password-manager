@@ -1,113 +1,89 @@
-# Password Manager — Projeto de Estudo
+# Password Manager
 
-Um gerenciador de senhas simples, desenvolvido em Python como projeto de estudo e aprendizado.
+Aplicação desktop em Python para estudo de interface gráfica com Tkinter, geração de senhas e criptografia básica de credenciais.
 
-O objetivo principal deste projeto é praticar a construção de uma aplicação desktop, organização de código, geração de senhas e fundamentos de criptografia aplicada.
+> **Aviso:** este projeto tem finalidade educacional. Não use para armazenar senhas reais sem revisar segurança, persistência e tratamento de erros.
 
-> **Aviso:** este projeto ainda está em desenvolvimento e tem finalidade educacional. Não o utilize para proteger senhas reais sem antes realizar uma revisão completa de segurança.
+## Visão geral
 
-## Tecnologias utilizadas
+O projeto usa uma senha mestra para derivar uma chave com `PBKDF2HMAC` e criptografar senhas com `Fernet` antes de salvar os dados localmente.
 
-- **Python 3** — linguagem principal do projeto.
-- **Tkinter** — criação da interface gráfica desktop.
-- **Fernet**, da biblioteca `cryptography` — criptografia simétrica autenticada.
-- **PBKDF2-HMAC-SHA256** — derivação de uma chave criptográfica a partir da senha mestra.
-- **Pyperclip** — cópia da senha gerada para a área de transferência.
-- **CSV/texto estruturado** — armazenamento local dos registros no arquivo `data.csv`.
+Fluxo atual da aplicação:
 
-## Como funciona
+1. O usuário faz login com uma senha mestra.
+2. A aplicação cria ou reutiliza um `salt` salvo em `.salt`.
+3. A chave criptográfica é derivada a partir da senha mestra.
+4. As senhas cadastradas são criptografadas antes de serem gravadas em `data.csv`.
+5. A interface permite gerar, salvar e buscar credenciais.
 
-1. O usuário informa uma senha mestra.
-2. A aplicação cria ou carrega um salt local no arquivo `.salt`.
-3. A senha mestra e o salt são usados pelo PBKDF2-HMAC-SHA256 para derivar a chave de criptografia.
-4. A senha cadastrada é criptografada com Fernet antes de ser salva.
-5. Os dados são armazenados localmente, associados ao site e ao e-mail/usuário informado.
+## Tecnologias
 
-A senha mestra não é salva pelo programa. Sem ela e sem o respectivo `.salt`, os registros criptografados não podem ser recuperados pela aplicação.
+- `Python 3`
+- `Tkinter`
+- `cryptography`
+- `pyperclip`
+- `six`
 
-## Funcionalidades atuais
+## Funcionalidades
 
 - Login com senha mestra.
-- Geração de senhas fortes aleatórias.
+- Geração de senha forte aleatória.
 - Cópia automática da senha gerada para a área de transferência.
-- Validação básica de e-mail e tamanho mínimo da senha.
-- Criptografia das senhas antes do armazenamento.
-- Interface gráfica para cadastrar site, e-mail/usuário e senha.
-- Teste independente de criptografia e descriptografia em `test_encrypt.py`.
+- Validação simples de e-mail e tamanho mínimo de senha.
+- Criptografia de senhas antes do armazenamento local.
+- Cadastro de site, e-mail/usuário e senha.
+- Busca de credenciais salvas pelo nome do site.
+- Tratamento de erro quando a senha mestra não consegue descriptografar um registro.
+- Teste isolado do serviço de criptografia em `test_encrypt.py`.
 
-## Próxima funcionalidade
+## Estrutura
 
-Uma das próximas etapas será implementar a **busca de senhas**:
-
-- localizar um registro pelo nome do site;
-- descriptografar o valor armazenado usando a chave derivada da senha mestra;
-- exibir o resultado somente quando solicitado pelo usuário;
-- permitir copiar a senha recuperada para a área de transferência.
-
-## O que estou aprendendo
-
-Este projeto está sendo usado para praticar:
-
-- criação de interfaces gráficas com Tkinter;
-- separação entre interface, regras de negócio e serviço de criptografia;
-- uso de classes e injeção simples de callbacks;
-- geração segura de valores aleatórios;
-- derivação de chaves criptográficas;
-- criptografia e descriptografia de dados;
-- validação de entradas do usuário;
-- leitura e escrita de arquivos;
-- uso de Git para acompanhar a evolução do código.
+```text
+day_29/
+├── encryption_service.py   # Derivação de chave, salt e criptografia
+├── main.py                 # Regras principais da aplicação
+├── password.py             # Geração de senhas
+├── service_interface.py    # Telas de login e cadastro
+├── test_encrypt.py         # Teste manual do serviço de criptografia
+├── logo.png                # Logo exibida na interface
+└── README.md               # Documentação
+```
 
 ## Como executar
-
-Crie e ative um ambiente virtual:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-```
-
-Instale as dependências:
-
-```bash
 pip install cryptography pyperclip six
-```
-
-Execute a aplicação:
-
-```bash
 python main.py
 ```
 
-Para executar o teste de criptografia:
+Para testar a criptografia separadamente:
 
 ```bash
 python test_encrypt.py
 ```
 
-## Estrutura do projeto
+## Pontos de aprendizado
 
-```text
-day_29/
-├── encryption_service.py   # Derivação de chave e criptografia Fernet
-├── main.py                 # Fluxo principal da aplicação
-├── password.py             # Geração de senhas aleatórias
-├── service_interface.py    # Interfaces de login e cadastro
-├── test_encrypt.py         # Teste de criptografia/descriptografia
-├── logo.png                # Imagem da interface
-└── README.md               # Documentação do projeto
-```
+- Construção de interface desktop com Tkinter.
+- Separação entre interface e lógica da aplicação.
+- Geração aleatória de senhas.
+- Derivação de chave com `PBKDF2HMAC`.
+- Criptografia e descriptografia com `Fernet`.
+- Leitura e escrita de arquivos locais.
+- Versionamento com Git.
 
-## Melhorias futuras
+## Limitações atuais
 
-- Implementar busca e recuperação de senhas.
-- Separar o armazenamento em uma estrutura mais robusta.
-- Melhorar o tratamento de erros de descriptografia.
-- Adicionar edição e exclusão de registros.
-- Evitar exibir senhas em texto aberto nas caixas de confirmação.
-- Remover valores de teste fixos e revisar permissões dos arquivos locais.
-- Adicionar testes automatizados para os principais fluxos.
+- Os dados são armazenados em `data.csv`, sem estrutura robusta ou controle de concorrência.
+- O projeto ainda não possui suíte de testes automatizados.
+- As validações ainda são básicas.
+- A aplicação precisa de revisão de segurança antes de qualquer uso real.
 
-## Status
+## Próximos passos
 
-🚧 Projeto em desenvolvimento — criado para estudo, prática e aprendizado contínuo.
+- Melhorar a busca para lidar com maiúsculas/minúsculas e múltiplos registros do mesmo site.
+- Adicionar edição e remoção de credenciais.
+- Melhorar persistência e organização dos dados.
+- Cobrir os fluxos principais com testes automatizados.

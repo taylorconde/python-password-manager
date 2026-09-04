@@ -1,8 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
 
-from six import with_metaclass
-
 
 # ---------------------------- LOGIN INTERFACE ------------------------------- #
 class LoginInterface:
@@ -34,7 +32,7 @@ class LoginInterface:
 
 # ---------------------------- UI SETUP ------------------------------- #
 class UserInterface:
-    def __init__(self, root,password_generator,save_data):
+    def __init__(self, root,password_generator,save_data, search_data):
         #window
         self.root = root
         self.root.title("Password Manager")
@@ -42,6 +40,7 @@ class UserInterface:
         self.save = save_data
         self.root.resizable(False,False)
         self.root.config(padx=50,pady=50)
+        self.search = search_data
 
     #image
         self.canvas = tk.Canvas(height=200,width=200)
@@ -78,5 +77,8 @@ class UserInterface:
         self.password_button = tk.Button(text="Generate Password", width=14,font=("Arial", 8), command=self.pass_generator)
         self.password_button.grid(column=2,row=3, sticky='w')
 
-        self.add_button = tk.Button(text="Add", width=41, command=self.save)
-        self.add_button.grid(column=1,row=4, columnspan=2)
+        self.add_button = tk.Button(text="Add", width=20, command=self.save)
+        self.add_button.grid(column=1,row=4)
+
+        self.search_button = tk.Button(text="Search", width=20, command=self.search)
+        self.search_button.grid(column=1, row=5)
