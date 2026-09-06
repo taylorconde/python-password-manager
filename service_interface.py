@@ -62,23 +62,23 @@ class UserInterface:
         self.password_label.grid(column=0,row=3, sticky='e')
 
     #entries
-        self.website_entry = tk.Entry(width=35)
-        self.website_entry.grid(column=1,row=1, columnspan=2, sticky='w')
+        self.website_entry = tk.Entry(width=32)
+        self.website_entry.grid(column=1,row=1, columnspan=2,sticky='w')
         self.website_entry.focus()
 
-        self.email_username_entry = tk.Entry(width=35)
+        self.email_username_entry = tk.Entry(width=50)
         self.email_username_entry.grid(column=1,row=2, columnspan=2, sticky='w')
         self.email_username_entry.insert(tk.END, string="useremail@mail.com")
 
-        self.password_entry = tk.Entry(width=21)
-        self.password_entry.grid(column=1,row=3,sticky='w')
+        self.password_entry = tk.Entry(width=32)
+        self.password_entry.grid(column=1,row=3, columnspan=2 ,sticky='w')
 
     #button
-        self.password_button = tk.Button(text="Generate Password", width=14,font=("Arial", 8), command=self.pass_generator)
-        self.password_button.grid(column=2,row=3, sticky='w')
+        self.password_button = tk.Button(text="Generate Password", width=16,font=("Arial", 8), command=self.pass_generator)
+        self.password_button.grid(column=2,row=3, sticky='e')
 
-        self.add_button = tk.Button(text="Add", width=20, command=self.save)
-        self.add_button.grid(column=1,row=4)
+        self.add_button = tk.Button(text="Add", width=47, command=self.save)
+        self.add_button.grid(column=1,row=4, columnspan=2)
 
-        self.search_button = tk.Button(text="Search", width=20, command=self.search)
-        self.search_button.grid(column=1, row=5)
+        self.search_button = tk.Button(text="Search", width=14, command=self.search)
+        self.search_button.grid(column=2, row=1,sticky='e')

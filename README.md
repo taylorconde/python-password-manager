@@ -13,7 +13,7 @@ Fluxo atual da aplicação:
 1. O usuário faz login com uma senha mestra.
 2. A aplicação cria ou reutiliza um `salt` salvo em `.salt`.
 3. A chave criptográfica é derivada a partir da senha mestra.
-4. As senhas cadastradas são criptografadas antes de serem gravadas em `data.csv`.
+4. As senhas cadastradas são criptografadas antes de serem gravadas em `data.json`.
 5. A interface permite gerar, salvar e buscar credenciais.
 
 ## Tecnologias
@@ -75,7 +75,7 @@ python test_encrypt.py
 
 ## Limitações atuais
 
-- Os dados são armazenados em `data.csv`, sem estrutura robusta ou controle de concorrência.
+- Os dados são armazenados em `data.json`, sem estrutura robusta ou controle de concorrência.
 - O projeto ainda não possui suíte de testes automatizados.
 - As validações ainda são básicas.
 - A aplicação precisa de revisão de segurança antes de qualquer uso real.

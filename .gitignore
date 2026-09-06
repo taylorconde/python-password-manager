@@ -10,6 +10,7 @@ __pycache__/
 # Dados e segredos locais do gerenciador de senhas
 .salt
 data.csv
+data.json
 .env
 .env.*
 !.env.example

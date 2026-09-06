@@ -8,7 +8,7 @@ from encryption_service import EncryptionService
 from cryptography.fernet import InvalidToken
 import pyperclip
 import re
-
+import json
 
 root = tk.Tk()
 
@@ -52,22 +52,38 @@ def validate_data():
 
 def save_data():
 
-    website_data = interface.website_entry.get()
-    email_username_data = interface.email_username_entry.get()
-    password_data = interface.password_entry.get()
+    website = interface.website_entry.get()
+    email = interface.email_username_entry.get()
+    password = interface.password_entry.get()
+
+
 
     if validate_data():
         is_ok=messagebox.askokcancel(
-            title=website_data,
+            title=website,
             message=f"These are the details entered: "
-                    f"\nEmail:{email_username_data}"
-                    f"\nPassword:{password_data}"
+                    f"\nEmail:{email}"
+                    f"\nPassword:{password}"
                     f"\nIs it ok to save?")
 
         if is_ok:
-            encrypted_pass = encryption_service.encrypt(password_data)
-            with open("data.csv", "a") as data:
-                data.writelines(f"{website_data} | {email_username_data} | {encrypted_pass}\n")
+
+            encrypted_pass = encryption_service.encrypt(password)
+            new_data = {
+                website: {
+                    "email": email,
+                    "password": encrypted_pass,
+                }
+            }
+
+            try:
+                with open("data.json", "r") as data_file:
+                    data = json.load(data_file)
+            except FileNotFoundError:
+                    data = {}
+            data.update(new_data)
+            with open("data.json", "w") as data_file:
+                json.dump(data, data_file, indent=4)
             clear_entry()
 
 
@@ -79,30 +95,27 @@ def search_data():
         return
 
     try:
-        with open("data.csv", "r") as data:
-            for line in data:
-                parts = line.strip().split(" | ")
-                if len(parts) == 3:
-                    site, email, encrypted_pass = parts
-
-                    if target_website == site:
-                        try:
-                            decrypted_pass = encryption_service.decrypt(encrypted_pass)
-                            messagebox.showinfo("Password Found",
-                                                f"Website: {site}\nEmail: {email}\nPassword: {decrypted_pass}")
-                            return
-                        except InvalidToken:
-                            messagebox.showerror("Error",
-                                                 "Could not decrypt this password. Check your master passkey.")
-                            return
-            messagebox.showinfo("Not Found", "No entry found for this website.")
+        with open("data.json", "r") as data_file:
+            data = json.load(data_file)
     except FileNotFoundError:
         messagebox.showerror("Error", "No data file found, Add a password first!")
+        data = {}
+    try:
+        mail = data[target_website]["email"]
+        encrypted_pass = data[target_website]["password"]
+    except KeyError:
+        messagebox.showinfo("Not Found", "No entry found for this website.")
+        return
 
-
-
-
-
+    try:
+        decrypted_pass = encryption_service.decrypt(encrypted_pass)
+        messagebox.showinfo("Password Found",
+                            f"Website: {target_website}\nEmail: {mail}\nPassword: {decrypted_pass}")
+        return
+    except InvalidToken:
+        messagebox.showerror("Error",
+                             "Could not decrypt this password. Check your master passkey.")
+        return
 
 login_ui = LoginInterface(root, handle_login)
 
